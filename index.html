@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Food List</title>
+</head>
+<body>
+  <h1>Food List</h1>
+
+  <button onclick="getFoodList()">Get Food List</button>
+  <div id="foodList"></div>
+
+  <h2>Add Food</h2>
+  <input type="text" id="foodInput" placeholder="Enter food name" />
+  <button onclick="addFood()">Add</button>
+
+  <script>
+    // ✅ GET: Fetch food list
+    async function getFoodList() {
+      const response = await fetch("http://127.0.0.1:8000/");
+      const data = await response.json();
+
+      let html = "<ul>";
+      for (const id in data) {
+        html += `<li>${id}: ${data[id]}</li>`;
+      }
+      html += "</ul>";
+
+      document.getElementById("foodList").innerHTML = html;
+    }
+
+    // ✅ POST: Add new food item
+    async function addFood() {
+      const input = document.getElementById("foodInput").value.trim();
+      if (!input) return;
+
+      await fetch("http://127.0.0.1:8000/postList/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ item: input })
+      });
+
+      getFoodList(); // Refresh list
+      document.getElementById("foodInput").value = "";
+    }
+  </script>
+  <h1>hi</h1>
+</body>
+</html>
